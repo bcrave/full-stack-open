@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+/* eslint-disable no-debugger */
+import { useState, useEffect, useRef } from "react";
 import peopleService from "./services/people";
 
 import "./index.css";
@@ -15,6 +16,7 @@ export default function App() {
   const [number, setNumber] = useState("");
   const [filterTerm, setFilterTerm] = useState("");
   const [notification, setNotification] = useState(null);
+  const inputRef = useRef();
 
   useEffect(() => {
     peopleService.getAll().then((initialPeople) => {
@@ -55,52 +57,97 @@ export default function App() {
   const handleDelete = (id, name) => {
     confirm(`Delete ${name}?`);
 
-    peopleService.remove(id).then(() => {
-      const peopleMinusDeleted = people.filter((person) => person.id !== id);
-      setPeople(peopleMinusDeleted);
-      setNotification({
-        message: `'${name}' successfully deleted!`,
-        type: "success",
+    peopleService
+      .remove(id)
+      .then(() => {
+        const peopleMinusDeleted = people.filter((person) => person.id !== id);
+        setPeople(peopleMinusDeleted);
+
+        setNotification({
+          message: `'${name}' successfully deleted!`,
+          type: "success",
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 2000);
+      })
+      .catch((err) => {
+        const peopleMinusDeleted = people.filter((person) => person.id !== id);
+        setPeople(peopleMinusDeleted);
+
+        setNotification({
+          message: err.response.data.error,
+          type: "error",
+        });
+
+        setTimeout(() => {
+          setNotification(null);
+        }, 2000);
       });
-      setTimeout(() => {
-        setNotification(null);
-      }, 2000);
-    });
   };
 
   const createPerson = (newPerson) => {
-    peopleService.create(newPerson).then((newPerson) => {
-      setPeople((prev) => [...prev, newPerson]);
-      setNotification({
-        message: `'${newPerson.name}' successfully added!`,
-        type: "success",
+    peopleService
+      .create(newPerson)
+      .then((newPerson) => {
+        setPeople((prev) => [...prev, newPerson]);
+
+        setName("");
+        setNumber("");
+        inputRef.current.focus();
+
+        setNotification({
+          message: `'${newPerson.name}' successfully added!`,
+          type: "success",
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 2000);
+      })
+      .catch((err) => {
+        setName("");
+        setNumber("");
+        inputRef.current.focus();
+
+        setNotification({
+          message: `${err.response.data.error}. Refreshing page...`,
+          type: "error",
+        });
+
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 2000);
       });
-      setTimeout(() => {
-        setNotification(null);
-      }, 2000);
-    });
   };
 
   const updatePerson = (newPerson) => {
-    confirm(
-      `${name} is already in the phonebook. Replace the old number with a new one?`
-    );
+    const { name } = newPerson;
+    const [{ id }] = people.filter((person) => person.name === name);
+
     peopleService
-      .getOne(name)
-      .then(([personToUpdate]) => {
-        peopleService
-          .update(personToUpdate.id, newPerson)
-          .then((updatedPerson) => {
-            setPeople((prev) =>
-              prev.map((person) =>
-                person.id !== updatedPerson.id ? person : updatedPerson
-              )
-            );
-          });
+      .update(id, newPerson)
+      .then((updatedPerson) => {
+        setPeople((prev) =>
+          prev.map((person) =>
+            person.id !== updatedPerson.id ? person : updatedPerson
+          )
+        );
+        setNotification({
+          message: `Successfully updated ${newPerson.name}`,
+          type: "success",
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 2000);
+
+        setName("");
+        setNumber("");
+
+        inputRef.current.focus();
       })
       .catch((err) => {
         setNotification({
-          message: `'${name}' was already removed from server.`,
+          message: err.response.data.error,
           type: "error",
         });
         console.error(err);
@@ -108,6 +155,10 @@ export default function App() {
           (person) => person.name !== name
         );
         setPeople(peopleMinusDeleted);
+
+        setName("");
+        setNumber("");
+
         setTimeout(() => {
           setNotification(null);
         }, 2000);
@@ -116,33 +167,24 @@ export default function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (
-      people.some(
-        (person) =>
-          person.name.toLowerCase() === name.toLowerCase() &&
-          person.number === number
-      )
-    ) {
-      alert(`${name} is already in the phonebook`);
-      setName("");
-      setNumber("");
-      return;
-    }
 
     const newPerson = {
       name,
       number,
     };
+    const [personFromDB] = people.filter((person) => person.name === name);
 
-    if (
-      people.some((person) => person.name.toLowerCase() === name.toLowerCase())
-    ) {
+    if (personFromDB && newPerson.number !== personFromDB.number) {
+      confirm(
+        `${name} is already in the phonebook. Replace the old number with a new one?`
+      );
       updatePerson(newPerson);
     } else {
       createPerson(newPerson);
+      setName("");
+      setNumber("");
+      return;
     }
-    setName("");
-    setNumber("");
   };
 
   return (
@@ -161,6 +203,7 @@ export default function App() {
         handleNumberChange={handleNumberChange}
         name={name}
         number={number}
+        inputRef={inputRef}
       />
 
       <h2>Numbers</h2>

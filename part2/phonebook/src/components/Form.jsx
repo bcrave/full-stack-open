@@ -4,11 +4,12 @@ export default function Form({
   handleNumberChange,
   name,
   number,
+  inputRef,
 }) {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        name: <input onChange={handleNameChange} value={name} />
+        name: <input onChange={handleNameChange} value={name} ref={inputRef} />
       </div>
 
       <div>

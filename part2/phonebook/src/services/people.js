@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "http://localhost:3001/people";
+const baseUrl = "/api/people";
 
 const getAll = async () => {
   const req = axios.get(baseUrl);
@@ -7,12 +7,8 @@ const getAll = async () => {
 };
 
 const getOne = async (name) => {
-  const req = axios.get(baseUrl);
-  return await req.then((res) =>
-    res.data.filter(
-      (person) => name.toLowerCase() === person.name.toLowerCase()
-    )
-  );
+  const req = axios.get(baseUrl, { name });
+  return await req.then((res) => res.data);
 };
 
 const create = async (newObject) => {
