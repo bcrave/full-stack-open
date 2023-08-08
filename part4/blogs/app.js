@@ -1,12 +1,13 @@
-import express, { json } from 'express';
-import { connect } from 'mongoose';
-import cors from 'cors';
+const express = require('express');
+const { json } = require('express');
+const { connect } = require('mongoose');
+const cors = require('cors');
 
-import logger from './utils/logger';
-import middleware from './utils/middleware';
-import { MONGO_DB_URI } from './utils/config';
+const logger = require('./utils/logger');
+const middleware = require('./utils/middleware');
+const { MONGO_DB_URI } = require('./utils/config');
 
-import blogsRouter from './controllers/blogs';
+const blogsRouter = require('./controllers/blogs');
 
 const mongoUrl = MONGO_DB_URI;
 
@@ -31,4 +32,4 @@ app.use('/api/blogs', blogsRouter);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
-export default app;
+module.exports = app;
