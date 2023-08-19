@@ -1,6 +1,6 @@
-const { reverse } = require('../utils/for_testing');
+const { reverse } = require('../utils/forTesting');
 
-describe('Returns', () => {
+describe('Reverse', () => {
   test('reverse of a', () => {
     const result = reverse('a');
 

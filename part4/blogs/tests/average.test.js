@@ -1,6 +1,6 @@
-const { average } = require('../utils/for_testing');
+const { average } = require('../utils/forTesting');
 
-describe('average', () => {
+describe('Average', () => {
   test('of one value is the value itself', () => {
     expect(average([1])).toBe(1);
   });
