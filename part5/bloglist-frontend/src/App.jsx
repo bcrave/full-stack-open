@@ -43,6 +43,34 @@ const App = () => {
     }
   }, []);
 
+  const createBlog = async (newBlog) => {
+    try {
+      const savedBlog = await blogService.create(newBlog);
+
+      const blogs = await blogService.getAll();
+      setBlogs(blogs);
+
+      setNotification({
+        type: 'success',
+        message: `A new blog '${savedBlog.title}' by ${savedBlog.author} added`,
+      });
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+
+      blogFormRef.current.toggleVisibility();
+
+    } catch (exception) {
+      setNotification({ type: 'error', message: 'Could not add blog' });
+
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
+      console.error(exception);
+    }
+  };
+
   const addLike = async (id, likes) => {
     const blog = blogs.find((blog) => blog.id === id);
 
@@ -98,9 +126,7 @@ const App = () => {
 
           <Togglable buttonLabel='New Blog' ref={blogFormRef}>
             <FormBlog
-              setBlogs={setBlogs}
-              setNotification={setNotification}
-              blogFormRef={blogFormRef}
+              createBlog={createBlog}
             />
           </Togglable>
         </div>
