@@ -51,6 +51,7 @@ export default function FormLogin({ setUser, setNotification }) {
         <label>
           username:{' '}
           <input
+            id='login-username'
             type='text'
             value={username}
             onChange={({ target }) => setUsername(target.value)}
@@ -59,12 +60,13 @@ export default function FormLogin({ setUser, setNotification }) {
         <label>
           password:{' '}
           <input
+            id='login-password'
             type='password'
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
         </label>
-        <input type='submit' value='Log in' style={styles.submit} />
+        <input type='submit' value='Log in' style={styles.submit} id='login-button' />
       </form>
     </div>
   );

@@ -21,7 +21,8 @@ const Blog = ({ blog, isCurrentUser, handleDelete, addLike }) => {
 
   return (
     <div style={blogStyle} data-blog>
-      {blog.title} {blog.author}
+      <span>{blog.title}</span>
+      <span>{blog.author}</span>
 
       {showDetails && (
         <div data-details>

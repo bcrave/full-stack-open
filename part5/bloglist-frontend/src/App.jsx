@@ -122,7 +122,7 @@ const App = () => {
         <div style={styles.flexCol}>
           <button onClick={handleLogout}>Log out</button>
 
-          <p>Logged in as {user.name}</p>
+          <p>Logged in as {user.username}</p>
 
           <Togglable buttonLabel='New Blog' ref={blogFormRef}>
             <FormBlog
@@ -150,10 +150,16 @@ const App = () => {
       {notification && (
         <Notification message={notification.message} type={notification.type} />
       )}
+
+      <h1>Blogs app</h1>
+
       <h2>Log into application</h2>
+
       <Togglable buttonLabel='Login'>
         <FormLogin setUser={setUser} setNotification={setNotification} />
       </Togglable>
+
+      <p>Bloglist app, Department of Computer Science, University of Helsinki 2023</p>
     </div>
   );
 };
