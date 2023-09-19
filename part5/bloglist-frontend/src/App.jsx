@@ -155,7 +155,7 @@ const App = () => {
 
       <h2>Log into application</h2>
 
-      <Togglable buttonLabel='Login'>
+      <Togglable buttonLabel='Login' visibleByDefault={true}>
         <FormLogin setUser={setUser} setNotification={setNotification} />
       </Togglable>
 

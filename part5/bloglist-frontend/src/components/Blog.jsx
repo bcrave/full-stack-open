@@ -31,7 +31,7 @@ const Blog = ({ blog, isCurrentUser, handleDelete, addLike }) => {
           <div data-testid='blog-likes'>
             Likes: {likes}
 
-            <button data-testid='like-button' onClick={handleLike}>Like</button>
+            <button data-testid={`like-button-${blog.id}`} onClick={handleLike}>Like</button>
           </div>
 
           {blog.user && <div>Created By: {blog.user.name}</div>}
